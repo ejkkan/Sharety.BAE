@@ -2,7 +2,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 import getCollections from "./models";
 
-export default async ({ user, password, url, db }) => {
+export default async () => {
   try {
     //console.log("dfs", `mongodb://${user}:${password}@${url}/${db}`);
     //docker mongodb://mongodb-primary/graphql-development

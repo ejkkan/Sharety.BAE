@@ -3,9 +3,9 @@ import getCharityCollection from "./charities";
 import getCampaignsCollection from "./campaigns";
 
 export default async database => {
-  let users = await getUserCollection(database);
-  let charities = await getCharityCollection(database);
-  let campaigns = await getCampaignsCollection(database);
+  const users = await getUserCollection(database);
+  const charities = await getCharityCollection(database);
+  const campaigns = await getCampaignsCollection(database);
 
   return {
     users,

@@ -6,12 +6,7 @@ import attachUserId from "./middlewares/attachUserId";
 import schema from "./graphql";
 
 async function start() {
-  const { db, collections, ObjectID } = await startDB({
-    user: "mongodb",
-    password: "1234",
-    db: "graphql-development",
-    url: "127.0.0.1:27017"
-  });
+  const { db, collections, ObjectID } = await startDB();
   //const pubSub = new PubSub()
 
   const context = req => ({

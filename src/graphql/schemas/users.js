@@ -4,6 +4,8 @@ type User {
   email: String!
   username:String!
   posts: [String!]!
+  permissions: [Permission!]
+  charities: [Charity]
 }
 
 type Query {
@@ -13,17 +15,21 @@ type Query {
 
 type Mutation {
   createUser(user: CreateUserInput): User!
-  signin(email: String!, password: String!): SigninPayload!
-  #signup(email: String!, password: String!): String!
+  updateUser(_id: ID!, user: UpdateUserInput): User!
+  deleteUser(_id: ID!): String
 }
 
 input CreateUserInput {
   email: String!
   password: String!
   username: String!
+  permissions: [Permission!]!
 }
 
-type SigninPayload {
-  token: String!
-  user: User!
-}`;
+input UpdateUserInput {
+  email: String
+  username: String
+  permissions: [Permission!]
+}
+
+`;

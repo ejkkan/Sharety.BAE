@@ -1,7 +1,7 @@
 {
   "projects": {
     "sharety": {
-      "schemaPath": "./src/graphql/schema.graphql",
+      "schemaPath": "./src/graphql/schemas/index.js",
       "extensions": {
         "endpoints": {
           "dev": "http://localhost:4000/graphql"

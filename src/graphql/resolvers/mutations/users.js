@@ -7,10 +7,10 @@ export default {
     let newUser = {
       email: user.email,
       username: user.username,
-      password: password
+      password: password,
+      permissions: user.permissions
     };
     try {
-      console.log("collections", collections);
       const res = await collections.users.insertOne(newUser);
     } catch (error) {
       throw new Error(error);
@@ -18,29 +18,44 @@ export default {
 
     return newUser;
   },
-  signin: async (parent, { email, password }, { collections }, info) => {
-    //console.log("context", context.request.userId);
-    const user = await collections.users.findOne({ email });
-
-    if (!user) {
-      throw new Error(`No user found for email: ${email}`);
-    }
+  updateUser: async (
+    parent,
+    { _id, user },
+    { collections, ObjectID, pubSub }
+  ) => {
+    const storedUser = await collections.users.findOne({
+      _id: ObjectID(_id)
+    });
+    let newUser = {
+      ...storedUser,
+      ...user
+    };
     try {
-      const valid = await bcrypt.compare(password, user.password);
-      if (!valid) {
-        throw new Error("Invalid password");
+      const res = await collections.users.updateOne(
+        { _id: ObjectID(_id) },
+        { $set: newUser }
+      );
+      if (res.matchedCount !== 1) {
+        throw new Error("error.user_not_found");
       }
 
-      const token = jwt.sign({ userId: user._id }, process.env.APP_SECRET, {
-        expiresIn: "1h"
+      return newUser;
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
+  deleteUser: async (parent, { _id }, { collections, ObjectID, pubSub }) => {
+    try {
+      let response = await collections.users.deleteOne({
+        _id: ObjectID(_id)
       });
 
-      return {
-        token,
-        user
-      };
+      if (response.deletedCount !== 1) {
+        throw new Error("error.user_not_found");
+      }
+      return "Successful";
     } catch (e) {
-      throw new Error(e);
+      throw new Error(e.message);
     }
   }
 };
