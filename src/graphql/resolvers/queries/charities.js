@@ -15,5 +15,15 @@ export default {
     } catch (e) {
       throw new Error("Failed to fetch Charities!!!");
     }
+  },
+  getUsersRelatedToCharity: async (parent, args, { collections, request }) => {
+    try {
+      const users = await collections.users.find({
+        users: [args._id]
+      });
+      return users.toArray();
+    } catch (e) {
+      throw new Error("Failed to fetch Charity!");
+    }
   }
 };

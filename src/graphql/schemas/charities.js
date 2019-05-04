@@ -10,6 +10,8 @@ export default `
   type Query {
     charity(_id: ID!): Charity!
     charities: [Charity!]
+    getUsersRelatedToCharity(_id: ID!): [Charity]
+
   }
 
   type Mutation {

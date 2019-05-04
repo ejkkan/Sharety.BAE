@@ -53,6 +53,21 @@ export default {
       if (response.deletedCount !== 1) {
         throw new Error("error.user_not_found");
       }
+
+      // const charities = await collections.charities
+      //   .find({
+      //     users: [_id]
+      //   })
+      //   .toArray();
+
+      // const updatedCharities = charities.map(c => {
+      //   const filtered = c.users.filter(u => u !== _id);
+      //   return {
+      //     ...c,
+      //     users: filtered
+      //   };
+      // });
+
       return "Successful";
     } catch (e) {
       throw new Error(e.message);

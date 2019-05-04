@@ -22,7 +22,6 @@ export default {
       let response = await collections.charities.deleteOne({
         _id: ObjectID(_id)
       });
-
       if (response.deletedCount !== 1) {
         throw new Error("error.charity_not_found");
       }
