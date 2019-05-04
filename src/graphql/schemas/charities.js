@@ -14,6 +14,7 @@ export default `
 
   type Mutation {
     createCharity(charity: CharityInput): Charity!
+    deleteCharity(_id: ID!): String
     #affiliateCharityToUser(user: ID!, charity: ID!): Charity!
   }
 

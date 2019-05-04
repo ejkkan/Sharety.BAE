@@ -12,12 +12,12 @@ export default (req, res, next) => {
         req.userId = userId;
         req.isLoggedIn = true;
         req.userPermissions = permissions;
+        return next();
       }
-    } catch (error) {
-      req.userId = null;
-      req.isLoggedIn = false;
-      req.userPermissions = null;
-    }
+    } catch (error) {}
   }
+  req.userId = null;
+  req.isLoggedIn = false;
+  req.userPermissions = null;
   next();
 };

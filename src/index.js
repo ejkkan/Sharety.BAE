@@ -2,7 +2,7 @@ const { GraphQLServer, PubSub, withFilter } = require("graphql-yoga");
 require("dotenv").config();
 
 import startDB from "./db";
-import attachUserId from "./middlewares/attachUserId";
+import attachUserCredentials from "./middlewares/attachUserCredentials";
 import schema from "./graphql";
 
 async function start() {
@@ -24,7 +24,7 @@ async function start() {
   });
 
   //Middleswares
-  server.express.use(attachUserId);
+  server.express.use(attachUserCredentials);
 
   server.start(
     {

@@ -4,6 +4,10 @@ type Mutation {
   signup(user: SignupInput): AuthPayload!
 }
 
+type Query {
+    isLoggedIn: Boolean!
+}
+
 type AuthPayload {
   token: String!
   user: User!

@@ -11,6 +11,7 @@ type User {
 type Query {
   users: [User!]!
   user(_id: ID!): User!
+  getCharitiesRelatedToUser(_id: ID!): [Charity]
 }
 
 type Mutation {
