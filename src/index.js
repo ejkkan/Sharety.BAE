@@ -14,7 +14,7 @@ async function start() {
     db,
     collections,
     ObjectID
-    //     pubSub,
+    //    pubSub,
     //    withFilter
   });
 
@@ -43,4 +43,4 @@ async function start() {
   );
 }
 
-start();
+export default start;

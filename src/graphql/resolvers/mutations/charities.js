@@ -15,6 +15,14 @@ export default {
       users: [charity.user]
     };
     const res = await collections.charities.insertOne(newCharity);
+    const res2 = await collections.users.update(
+      { _id: ObjectID(user._id) },
+      { $push: { charities: newCharity._id } }
+    );
+    console.log("res2", res2);
+    if (res2.result.nModified !== 1) {
+      throw new Error("Failed to update user with new charity");
+    }
     return newCharity;
   },
   deleteCharity: async (parent, { _id }, { collections, ObjectID, pubSub }) => {

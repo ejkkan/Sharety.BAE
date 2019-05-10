@@ -1,22 +1,21 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+//import Transaction from "../../../utils/transaction";
 
 export default {
-  createUser: async (parent, { user }, { collections }, info) => {
-    const password = await bcrypt.hash(user.password, 10);
-    let newUser = {
-      email: user.email,
-      username: user.username,
-      password: password,
-      permissions: user.permissions
-    };
+  createUser: async (parent, { user }, { db, collections }, info) => {
     try {
+      const password = await bcrypt.hash(user.password, 10);
+      let newUser = {
+        email: user.email,
+        username: user.username,
+        password: password,
+        permissions: user.permissions
+      };
       const res = await collections.users.insertOne(newUser);
+      return newUser;
     } catch (error) {
       throw new Error(error);
     }
-
-    return newUser;
   },
   updateUser: async (
     parent,
@@ -45,32 +44,40 @@ export default {
     }
   },
   deleteUser: async (parent, { _id }, { collections, ObjectID, pubSub }) => {
-    try {
-      let response = await collections.users.deleteOne({
-        _id: ObjectID(_id)
-      });
-
-      if (response.deletedCount !== 1) {
-        throw new Error("error.user_not_found");
-      }
-
-      // const charities = await collections.charities
-      //   .find({
-      //     users: [_id]
-      //   })
-      //   .toArray();
-
-      // const updatedCharities = charities.map(c => {
-      //   const filtered = c.users.filter(u => u !== _id);
-      //   return {
-      //     ...c,
-      //     users: filtered
-      //   };
-      // });
-
-      return "Successful";
-    } catch (e) {
-      throw new Error(e.message);
-    }
+    // const operation = async transaction => {
+    //   await transaction.start();
+    //   try {
+    //     let response = await collections.users.deleteOne(
+    //       {
+    //         _id: ObjectID(_id)
+    //       },
+    //       { session: transaction.getSession() }
+    //     );
+    //     if (response.deletedCount !== 1) {
+    //       throw new Error("error.user_not_found");
+    //     }
+    //     const charities = await collections.charities
+    //       .find({
+    //         users: [_id]
+    //       })
+    //       .toArray();
+    //     if (charities?.length) {
+    //       charities.forEach(async c => {
+    //         const users = c.users.filter(u => u !== _id);
+    //         await collections.charities.updateOne(
+    //           { _id: ObjectID(c._id) },
+    //           { $set: { users } },
+    //           { session: transaction.getSession() }
+    //         );
+    //       });
+    //     }
+    //     await transaction.commit();
+    //     await transaction.end();
+    //     return "Successful";
+    //   } catch (e) {
+    //     throw new Error(e.message);
+    //   }
+    // };
+    // return await new Transaction(operation);
   }
 };

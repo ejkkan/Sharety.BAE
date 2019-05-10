@@ -6,6 +6,9 @@ COPY ./package*.json ./
 
 RUN npm install
 
+ENV NODE_ENV=production
+ENV production=true
+
 COPY ./ ./
 
-CMD [ "npm", "run", "server" ]
+CMD [ "npm", "start" ]

@@ -88,3 +88,6 @@ typings/
 
 #vscode
 .history
+
+#docker
+.docker-compose.yml
