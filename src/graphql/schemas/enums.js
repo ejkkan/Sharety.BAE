@@ -1,9 +1,11 @@
 export default `
-enum Permission {
+  enum Permission {
     ADMIN
-  MANAGER
-  CHARITY
-  SUPPORT
-  READ
-  WRITE
-}`;
+    MANAGER
+    CHARITY
+    SUPPORT
+    READ
+    WRITE
+  }
+
+`;

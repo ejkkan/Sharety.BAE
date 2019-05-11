@@ -2,13 +2,14 @@ export default {
   createCampaign: async (
     parent,
     { campaign },
-    { collections, ObjectID },
+    { collections, ObjectID, request },
     info
   ) => {
     let newCampaign = {
       title: campaign.title,
       description: campaign.description,
-      charity: campaign.charity
+      charity: campaign.charity,
+      createdBy: request.userId
     };
 
     const charity = await collections.charities.findOne({
@@ -21,7 +22,6 @@ export default {
       { _id: ObjectID(campaign.charity) },
       { $push: { campaigns: newCampaign._id } }
     );
-    console.log("res2", res2);
     if (res2.result.nModified !== 1) {
       throw new Error("Failed to update user with new charity");
     }
@@ -29,7 +29,6 @@ export default {
       { _id: ObjectID(campaign.charity) },
       { $push: { campaigns: newCampaign._id } }
     );
-
     // const res = await collections.campaigns.insertOne(newCampaign);
     return newCampaign;
   }

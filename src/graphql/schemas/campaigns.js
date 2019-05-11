@@ -3,7 +3,8 @@ export default `
     _id: ID!
     title: String!
     description: String!
-    charity: ID!
+    charity: Charity!
+    createdBy: User!
   }
 
   type Query {
@@ -20,4 +21,5 @@ export default `
     description: String!
     charity: ID!
   }
+
 `;

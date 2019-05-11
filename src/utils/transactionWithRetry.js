@@ -1,9 +1,28 @@
 import { client } from "../db";
+import Transaction from "./transaction";
 
-class Transaction {
-  constructor() {
-    this.session = client?.startSession();
+class TransactionWithRetry {
+  constructor(operation) {
+    this.session = new Transaction().start();
+    if (operation) {
+      this.operation = operation;
+      return this.run();
+    }
   }
+  run = async () => {
+    try {
+      return await this.operation(this);
+    } catch (error) {
+      return await this.retry(error);
+    }
+  };
+  retry = async error => {
+    if (error?.errorLabels?.indexOf("TransientTransactionError") >= 0) {
+      await this.operation(this);
+    } else {
+      throw error;
+    }
+  };
   getSession = () => this.session;
   start = async () => {
     try {
@@ -32,4 +51,4 @@ class Transaction {
   };
 }
 
-export default Transaction;
+export default TransactionWithRetry;

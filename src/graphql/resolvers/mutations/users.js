@@ -79,5 +79,34 @@ export default {
     //   }
     // };
     // return await new Transaction(operation);
+  },
+  affiliateUserToCharity: async (
+    parent,
+    { charity, user },
+    { collections, ObjectID, pubSub }
+  ) => {
+    const u = await collections.users.findOne({
+      _id: ObjectID(user)
+    });
+    const c = await collections.charities.findOne({
+      _id: ObjectID(charity)
+    });
+    if (c?.users?.includes(user))
+      throw new Error("Charity already affiliated to user");
+    if (u?.charities?.includes(charity))
+      throw new Error("User already affiliated to charity");
+
+    await collections.charities.update(
+      { _id: ObjectID(charity) },
+      { $push: { users: user } }
+    );
+    await collections.users.update(
+      { _id: ObjectID(user) },
+      { $push: { charities: charity } }
+    );
+    return {
+      user: u,
+      charity: c
+    };
   }
 };

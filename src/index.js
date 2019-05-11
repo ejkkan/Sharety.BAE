@@ -30,7 +30,7 @@ async function start() {
     {
       cors: {
         credentials: true,
-        origin: ["http://localhost:8080", "http://localhost:3000"] // here define the origins
+        origin: ["http://localhost:3000"] // here define the origins
       },
       port: 4000,
       endpoint: "/graphql",
@@ -43,4 +43,4 @@ async function start() {
   );
 }
 
-export default start;
+start();
