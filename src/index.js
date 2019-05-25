@@ -5,6 +5,31 @@ import startDB from "./db";
 import attachUserCredentials from "./middlewares/attachUserCredentials";
 import schema from "./graphql";
 
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DB
+});
+const text = "INSERT INTO items(text) VALUES($1) RETURNING *";
+const values = ["brianc"];
+
+// pool.query(
+//   "CREATE TABLE items(id SERIAL PRIMARY KEY, text VARCHAR(40) not null)"
+// );
+pool.query(text, values, (err, res) => {
+  if (err) {
+    console.log(err.stack);
+  } else {
+    console.log(res.rows[0]);
+    // { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
+  }
+});
+
+pool.query("SELECT NOW()", (err, res) => {
+  console.log(err, res);
+  pool.end();
+});
+
 async function start() {
   const { db, collections, ObjectID } = await startDB();
   //const pubSub = new PubSub()
