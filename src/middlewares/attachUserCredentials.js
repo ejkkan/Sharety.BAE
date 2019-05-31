@@ -14,7 +14,9 @@ export default (req, res, next) => {
         req.userPermissions = permissions;
         return next();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("error", error);
+    }
   }
   req.userId = null;
   req.isLoggedIn = false;

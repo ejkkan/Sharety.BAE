@@ -1,9 +1,8 @@
 export default {
-  users: async ({ users }, a, { collections, ObjectID }) => {
-    console.log("usersusers", users);
-    if (!users?.length) return [];
+  managers: async ({ managers }, a, { collections, ObjectID }) => {
+    if (!managers?.length) return [];
     return await collections.users
-      .find({ _id: { $in: users.map(e => ObjectID(e)) } })
+      .find({ _id: { $in: managers.map(e => ObjectID(e)) } })
       .toArray();
   },
   campaigns: async ({ campaigns }, a, { collections, ObjectID }) => {

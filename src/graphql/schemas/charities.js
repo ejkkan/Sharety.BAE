@@ -4,7 +4,7 @@ export default `
     title: String!
     description: String!
     campaigns: [Campaign!]
-    users: [User!]!
+    managers: [User!]!
     image: String!
     largeImage: String!
     images: [String]!
@@ -20,17 +20,17 @@ export default `
   type Mutation {
     createCharity(charity: CharityInput): Charity!
     deleteCharity(_id: ID!): String
-    affiliateCharityToUser(user: ID!, charity: ID!): AffiliateChaityUserPayload!
+    affiliateCharityToUser(manager: ID!, charity: ID!): AffiliateChaityUserPayload!
   }
 
   input CharityInput {
     title: String!
     description: String!
-    user: ID!
+    manager: ID!
   }
 
   type AffiliateChaityUserPayload {
     charity: Charity!
-    user: User!
+    manager: User!
   }
 `;

@@ -8,13 +8,10 @@ export default async () => {
     const dbUrl = process.env.production
       ? process.env.PROD_DB
       : process.env.DEV_DB;
-    client = await MongoClient.connect(
-      "mongodb+srv://sharety:90PrmbmeM10mong@cluster0-lghto.mongodb.net/test?retryWrites=true&w=majority",
-      {
-        //useCreateIndex: true,
-        useNewUrlParser: true
-      }
-    );
+    client = await MongoClient.connect(dbUrl, {
+      //useCreateIndex: true,
+      useNewUrlParser: true
+    });
 
     const dbName = process.env.production
       ? process.env.PROD_DB_NAME

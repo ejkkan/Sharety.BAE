@@ -7,7 +7,7 @@ export default {
   },
   createdBy: async ({ createdBy }, a, { collections, ObjectID }) => {
     console.log("createdBy", createdBy);
-    if (!createdBy) return null;
+    if (!createdBy) return {};
     return await collections.users.findOne({
       _id: ObjectID(createdBy)
     });

@@ -1,16 +1,15 @@
 import { client } from "../db";
-import Transaction from "./transaction";
 
+//
 class TransactionWithRetry {
-  constructor(operation) {
-    this.session = new Transaction().start();
-    if (operation) {
-      this.operation = operation;
-      return this.run();
-    }
+  constructor() {
+    this.retries = 0;
+    this.session = client?.startSession();
   }
-  run = async () => {
+  run = async operation => {
+    this.operation = operation;
     try {
+      if (this.retries >= 3) throw new Error("Could not complete transcation");
       return await this.operation(this);
     } catch (error) {
       return await this.retry(error);
@@ -18,7 +17,8 @@ class TransactionWithRetry {
   };
   retry = async error => {
     if (error?.errorLabels?.indexOf("TransientTransactionError") >= 0) {
-      await this.operation(this);
+      this.retries = retries += 1;
+      await this.run(this.operation);
     } else {
       throw error;
     }

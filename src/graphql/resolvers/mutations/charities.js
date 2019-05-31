@@ -1,3 +1,5 @@
+//import Transaction from "../../../utils/transaction";
+import Transaction from "../../../utils/transactionWithRetry";
 export default {
   createCharity: async (
     parent,
@@ -5,27 +7,43 @@ export default {
     { collections, ObjectID },
     info
   ) => {
-    const user = await collections.users.findOne({
-      _id: ObjectID(charity.user)
-    });
-    if (!user) throw new Error("Could not find that user");
-    let newCharity = {
-      title: charity.title,
-      description: charity.description,
-      users: [charity.user]
+    const operation = async transaction => {
+      await transaction;
+      try {
+        await transaction.start();
+        const user = await collections.users.findOne({
+          _id: ObjectID(charity.manager)
+        });
+        if (!user) throw new Error("Could not find that user");
+        let newCharity = {
+          title: charity.title,
+          description: charity.description,
+          managers: [charity.manager]
+        };
+        const res = await collections.charities.insertOne(newCharity, {
+          session: transaction.getSession()
+        });
+        const res2 = await collections.users.update(
+          { _id: ObjectID(user._id) },
+          { $push: { charities: newCharity._id } },
+          { session: transaction.getSession() }
+        );
+        if (res2.result.nModified !== 1) {
+          throw new Error("Failed to update user with new charity");
+        }
+        await transaction.commit();
+        await transaction.end();
+        return newCharity;
+      } catch (e) {
+        throw new Error(e);
+      }
     };
-    const res = await collections.charities.insertOne(newCharity);
-    const res2 = await collections.users.update(
-      { _id: ObjectID(user._id) },
-      { $push: { charities: newCharity._id } }
-    );
-    if (res2.result.nModified !== 1) {
-      throw new Error("Failed to update user with new charity");
-    }
-    return newCharity;
+    return await new Transaction().run(operation);
   },
   deleteCharity: async (parent, { _id }, { collections, ObjectID, pubSub }) => {
     try {
+      const transaction = await new Transaction();
+      await transaction.start();
       let response = await collections.charities.deleteOne({
         _id: ObjectID(_id)
       });
@@ -39,30 +57,30 @@ export default {
   },
   affiliateCharityToUser: async (
     parent,
-    { charity, user },
+    { charity, manager },
     { collections, ObjectID, pubSub }
   ) => {
     const u = await collections.users.findOne({
-      _id: ObjectID(user)
+      _id: ObjectID(manager)
     });
     const c = await collections.charities.findOne({
       _id: ObjectID(charity)
     });
-    if (c?.users?.includes(user))
+    if (c?.managers?.includes(manager))
       throw new Error("Charity already affiliated to user");
     if (u?.charities?.includes(charity))
       throw new Error("User already affiliated to charity");
 
     await collections.charities.update(
       { _id: ObjectID(charity) },
-      { $push: { users: user } }
+      { $push: { users: manager } }
     );
     await collections.users.update(
-      { _id: ObjectID(user) },
+      { _id: ObjectID(manager) },
       { $push: { charities: charity } }
     );
     return {
-      user: u,
+      manager: u,
       charity: c
     };
   }

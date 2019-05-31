@@ -5,11 +5,14 @@ export default {
     { collections, ObjectID, request },
     info
   ) => {
+    //console.log("request", request);
+    if (!request.userId) throw new Error("You are not logged in!");
+    console.log("request.userId", request.userId);
     let newCampaign = {
       title: campaign.title,
       description: campaign.description,
       charity: campaign.charity,
-      createdBy: request.userId
+      createdBy: ObjectID(request.userId)
     };
 
     const charity = await collections.charities.findOne({
