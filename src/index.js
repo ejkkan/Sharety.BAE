@@ -1,5 +1,5 @@
+import "./utils/dotenv";
 const { GraphQLServer, PubSub, withFilter } = require("graphql-yoga");
-require("dotenv").config();
 
 import startDB from "./db";
 import attachUserCredentials from "./middlewares/attachUserCredentials";

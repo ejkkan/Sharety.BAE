@@ -4,7 +4,7 @@ import campaigns from "./campaigns";
 import authentication from "./authentication";
 import subscriptions from "./subscriptions";
 import subscriptionItems from "./subscriptionItems";
-import plans from "./plans";
+import payment from "./payment";
 
 export default {
   ...users,
@@ -13,5 +13,5 @@ export default {
   ...authentication,
   ...subscriptions,
   ...subscriptionItems,
-  ...plans
+  ...payment
 };

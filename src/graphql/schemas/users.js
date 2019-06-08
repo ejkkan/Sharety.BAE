@@ -4,10 +4,9 @@ export default `
     email: String!
     username:String!
     permissions: [Permission!]
-    charities: [Charity]
-
     phone: String
     profileImage: String
+    charities:[Charity]
   }
 
   type Query {
@@ -21,6 +20,7 @@ export default `
     updateUser(_id: ID!, user: UpdateUserInput): User!
     deleteUser(_id: ID!): String
     affiliateUserToCharity(user: ID!, charity: ID!): AffiliateCharityUserPayload!
+    createPaymentCard(card_token: String!): String!
   }
 
   input CreateUserInput {
@@ -36,13 +36,12 @@ export default `
     email: String
     username: String
     phone: String
-    charities: [ID!]
     profileImage: String
     permissions: [Permission!]
   }
   
   type AffiliateCharityUserPayload {
-    charity: Charity!
     user: User!
+    charity: Charity!
   }
 `;

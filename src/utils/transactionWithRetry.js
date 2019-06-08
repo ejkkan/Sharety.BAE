@@ -46,6 +46,7 @@ class TransactionWithRetry {
   };
   end = async () => {
     try {
+      this.retries = 0;
       await this.session?.endSession();
     } catch (error) {}
   };

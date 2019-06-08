@@ -5,9 +5,9 @@ import Charities from "./charities";
 import Campaigns from "./campaigns";
 import Enums from "./enums";
 import Authentication from "./authentication";
-import Subscription from "./subscriptions";
+import Subscription from "./subscription";
 import SubscriptionItem from "./subscriptionItems";
-import Plan from "./plans";
+import Payment from "./payment";
 
 const typeDefs = [
   Users,
@@ -17,7 +17,7 @@ const typeDefs = [
   Authentication,
   Subscription,
   SubscriptionItem,
-  Plan
+  Payment
 ];
 
 export default mergeTypes(typeDefs, { all: true });

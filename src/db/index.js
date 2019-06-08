@@ -2,7 +2,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 import getCollections from "./collections";
 export let client = null;
-
+console.log("process.env.production", process.env);
 export default async () => {
   try {
     const dbUrl = process.env.production

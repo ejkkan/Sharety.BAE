@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import Transaction from "../../../utils/transaction";
-
+import Transaction from "../../../utils//transactionWithRetry";
+import { createCard, createUser } from "../../../utils/stripe";
 export default {
   createUser: async (parent, { user }, { db, collections }, info) => {
     try {
@@ -110,5 +110,47 @@ export default {
       user: u,
       charity: c
     };
+  },
+  createPaymentCard: async (
+    parent,
+    { card_token },
+    { collections, ObjectID, request }
+  ) => {
+    const operation = async transaction => {
+      await transaction;
+      try {
+        await transaction.start();
+        if (!request.userId) {
+          throw new Error(`You must be signed in`);
+        }
+        const user = await collections.users.findOne({
+          _id: ObjectID(request.userId)
+        });
+
+        let stripeUser = await createUser({ email: user.email });
+        if (!stripeUser?.id) {
+          throw new Error(
+            `Something went wrong setting you up with our payment provider`
+          );
+        }
+        let card = await createCard(stripeUser.id, card_token);
+
+        if (!card) {
+          throw new Error(`Something went wrong with adding the payment card`);
+        }
+        console.log("card.id", card.id);
+        await collections.users.update(
+          { _id: ObjectID(user._id) },
+          { $set: { stripeCard: card.id, stripeId: stripeUser.id } },
+          { upsert: true, session: transaction.getSession() }
+        );
+        await transaction.commit();
+        await transaction.end();
+        return "Success";
+      } catch (e) {
+        throw new Error(e);
+      }
+    };
+    return await new Transaction().run(operation);
   }
 };
